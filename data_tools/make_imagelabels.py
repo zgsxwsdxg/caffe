@@ -7,17 +7,17 @@ import random
 import json
 
 def write_list(path_out, image_list):
-    with open(path_out, 'w') as fout:
-        n_images = xrange(len(image_list))
-        for i in n_images:
-#            line = '%d\t' % image_list[i][0]
-            line = '%s' % image_list[i][1]
-            for j in image_list[i][2:]:
-                line += ' %d' % j
-#            line += '%s\n' % image_list[i][1]
-            
-            line += '\n'
-            fout.write(line)
+    if os.path.isfile(path_out):
+        os.remove(path_out)
+    if len(image_list) != 0:
+        with open(path_out, 'w') as fout:
+            n_images = xrange(len(image_list))
+            for i in n_images:
+                line = '%s' % image_list[i][1]
+                for j in image_list[i][2:]:
+                    line += ' %d' % j
+                line += '\n'
+                fout.write(line)
             
 def list_image(root, recursive, exts):
     image_list = []
@@ -39,10 +39,8 @@ def list_image(root, recursive, exts):
             os.remove(labels_path)
         
         with open(labels_path, 'w') as file_writer:
-            cat_json = json.dumps(cat)
+            cat_json = json.dumps(cat,sort_keys = True)
             file_writer.write(cat_json)
-            
-            
     else:
         for fname in os.listdir(root):
             fpath = os.path.join(root, fname)
@@ -52,9 +50,6 @@ def list_image(root, recursive, exts):
     return image_list
     
 def make_list(args):
-    print args.root
-    print args.recursive
-    print args.exts
     txt_save_path = args.root + args.prefix
     image_list = list_image(args.root, args.recursive, args.exts)
     if args.shuffle is True:
