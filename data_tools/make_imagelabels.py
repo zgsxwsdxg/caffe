@@ -39,7 +39,7 @@ def list_image(root, recursive, exts):
             os.remove(labels_path)
         
         with open(labels_path, 'w') as file_writer:
-            cat_json = json.dumps(cat,sort_keys = True)
+            cat_json = json.dumps(cat, sort_keys = True, indent = 0)
             file_writer.write(cat_json)
     else:
         for fname in os.listdir(root):
