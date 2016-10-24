@@ -4,7 +4,8 @@
 import argparse
 import os
 import random
-   
+import json
+
 def write_list(path_out, image_list):
     with open(path_out, 'w') as fout:
         n_images = xrange(len(image_list))
@@ -31,14 +32,15 @@ def list_image(root, recursive, exts):
                 if os.path.isfile(fpath) and (suffix in exts):
                     if path not in cat:
                         cat[path] = len(cat)
-#                    image_list.append((len(image_list), os.path.relpath(fpath, root), cat[path]))
                     image_list.append((len(image_list), os.path.relpath(fpath, root), cat[path]))
-        path_out = root
-        path_out += 'label.txt'
+    
+        labels_path = os.path.join(root,'labels_map.json')
+        if os.path.isfile(labels_path):
+            os.remove(labels_path)
         
-        print cat
-        print cat.keys()
-#        with open(path_out, 'w') as fout:
+        with open(labels_path, 'w') as file_writer:
+            cat_json = json.dumps(cat)
+            file_writer.write(cat_json)
             
             
     else:
@@ -54,7 +56,6 @@ def make_list(args):
     print args.recursive
     print args.exts
     txt_save_path = args.root + args.prefix
-    print txt_save_path
     image_list = list_image(args.root, args.recursive, args.exts)
     if args.shuffle is True:
         random.seed(100)
